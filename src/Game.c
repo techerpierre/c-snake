@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "Vec2.h"
 
 Game *Game_Init(void)
 {
@@ -81,7 +82,7 @@ void _Game_Setup(Game *game)
     SnakeInitData snake_init_params = {game->cell_count};
     Snake *snake = Snake_Init(snake_init_params);
     game->snake = snake;
-    Collectable_GenerateRandomPosition(&game->collectable, game->cell_count);
+    _Game_GenerateCollectablePosition(game);
 }
 
 void _Game_Event(Game *game)
@@ -112,7 +113,7 @@ void _Game_Event(Game *game)
 
     if (Snake_CollideWith(game->snake, game->collectable.position))
     {
-        Collectable_GenerateRandomPosition(&game->collectable, game->cell_count);
+        _Game_GenerateCollectablePosition(game);
         Snake_Enlarge(game->snake);
         game->score++;
     }
@@ -175,4 +176,13 @@ InputKey _Game_SDLKeyToInputKey(SDL_Event event)
     case SDLK_z: return INPUT_UP;
     case SDLK_s: return INPUT_DOWN;
     }
+}
+
+void _Game_GenerateCollectablePosition(Game *game)
+{
+    do {
+        Collectable_GenerateRandomPosition(&game->collectable, game->cell_count);
+    } while (
+        Vec2_IsOneOf(game->collectable.position, game->snake->body, game->snake->body_length) ||
+        Vec2_Is(game->collectable.position, game->snake->head));    
 }

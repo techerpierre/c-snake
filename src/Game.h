@@ -50,5 +50,6 @@ void _Game_Clear(Game *game);
 void _Game_PreventTick(GameTickshandler *ticks_handler);
 void _Game_Tick(GameTickshandler *ticks_handler, bool *update_snake);
 InputKey _Game_SDLKeyToInputKey(SDL_Event event);
+void _Game_GenerateCollectablePosition(Game *game);
 
 #endif // __GAME_H__
